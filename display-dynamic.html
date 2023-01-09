@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Vue 3 Demo</title>
+<style>
+.root{ border: #34495E 3px solid;text-align:center;padding:2px;margin:5px}
+.child{
+    background:tomato;color:white;margin:5px;padding:5px;
+}
+</style>  
+</head>
+<body>
+    <div id='root'>
+        <div class='root'>
+            <h2>{{title}}</h2><hr>
+            <child v-for="(element, index) in list" :key="index" :city="element"></child>
+        </div>
+    </div>
+    <template id='child'>
+        <p class='child' title='child comp. P tag'>
+            {{title}} - {{city}}
+        </p>
+    </template>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+    let app = Vue.createApp({
+        data(){
+            return {
+                title:'ROOT Comp.',
+                list:['London','Newcatle','Durham','Sunderland']
+            }
+        }
+    })
+    app.component('child',{
+        props: ['city'],
+        name:'child',
+        template:'#child',
+        data(){
+            return {
+                title:'Child Comp.'
+            }
+        },
+        unmounted(){ console.log(this.title+' unmounted...')}
+    })
+
+    let vm = app.mount('#root')
+    </script>
+</body>
+</html>

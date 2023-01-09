@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Vue 3 Demo</title></head>
+<style>
+.bgOne{border:#34495E 3px solid;color:#34495E;padding:15px;}
+.bgTwo{border:#3CB881 3px dashed;color:#3CB881;padding:10px;}
+</style>
+<body>
+    <div id='vue_app'>
+        <div class='bgOne'>
+            <h1 :title="msg">{{title}}</h1>
+            <input type="text" v-model="msg"/>
+            <!-- below both lines are equivalent -->
+            <!-- <child-comp :mail="msg" ref="cc" @relay="msg=$event"></child-comp> -->
+            <child-comp ref="cc" v-model="msg"></child-comp>
+        </div>
+    </div>
+    <template id="child_temp">
+        <div class='bgTwo'>
+            <h2>{{title}}</h2>
+            <input type="text" :value="modelValue" @input="send"/>
+            <!-- <input type="text" :value="mail" @input="send"/> -->
+        </div>
+    </template>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        let app = Vue.createApp({
+            data(){return{
+                title:'Root Comp.',
+                msg: 'root comp msg'
+            }},
+        })
+        app.component('childComp', {
+            // to use v-model on child use below name for mail
+            props: ['modelValue'],
+            // props: ['mail'],
+            name: 'child_comp',
+            emits: ['update:modelValue'],
+            // emits: ['relay'],
+            data() {
+                return {
+                    title: 'Child Comp Here',
+                    msg: 'root component msg'
+                }
+            },
+            methods: {
+                send($event) {
+                    this.$emit('update:modelValue',$event.target.value)
+                }
+            },
+            template: "#child_temp"
+        })
+        let vm = app.mount('#vue_app')
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Vue 3 Demo</title>
+<style>
+.root{ border: #34495E 3px solid;text-align:center;padding:10px;margin:5px}
+.root button {margin:10px 10px 0px 10px;}
+.childOne{
+    background: #3CB881;text-align:center;color:white;
+    padding:10px;margin:10px;
+}
+.childTwo{
+    background:#FF7D62;text-align:center;color:white;
+    padding:10px;margin:10px;
+}
+</style>  
+</head>
+<body>
+    <div id='root'>
+        <div class='root'>
+            <h2>{{title}}</h2><hr>
+            <div style="border:2px dashed #34495E; margin:0 auto">
+                <!-- <h1>+</h1><h3><b>mount component here...</b></h3> -->
+                <!-- keep alive with this no component is destroyed, reused again, unmounted hook not called -->
+                <!-- max 2 mean last two activated will stay in memory, FIFO -->
+                <!-- exclude will not save it in memory -->
+                <keep-alive max="1" include="c1,c1" exclude="c4">
+                    <component :is="c_name" :key="c_name"></component>
+                </keep-alive>
+            </div>
+            <button @click="c_name=`c1`">C1</button>
+            <button @click="c_name=`c2`">C2</button>
+        </div>
+        <!-- <c1></c1>
+        <c2></c2> -->
+    </div>
+    <template id='child_1'>
+        <div class='childOne'><h2>{{title}}</h2></div>
+    </template>
+    <template id='child_2'>
+        <div class='childTwo'><h2>{{title}}</h2></div>
+    </template>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+    let app = Vue.createApp({
+        //if refresh changed, it will refresh the page mounting the same component again
+        data(){ return{ title:'ROOT Comp.',c_name: 'c1', refresh: 1}}
+    })
+    app.component('c1',{
+        name: 'c1',
+        template:'#child_1',
+        data(){ return{ title:'Child Comp. ONE' }},
+        created(){console.log(this.title+' created')},
+        // mounted(){console.log(this.title+' mounted')},
+        // unmounted(){console.log(this.title+' unmounted')}
+
+        // in keet alive we use activated and deactivated hooks
+        activated(){console.log(this.title+' activated')},
+        deactivated(){console.log(this.title+' deactivated')}
+    })
+    app.component('c2',{
+        name: 'c2',
+        template:'#child_2',
+        data(){ return{ title:'Child Comp. TWO' }},
+        created(){console.log(this.title+' created')},
+        // mounted(){console.log(this.title+' mounted')},
+        // unmounted(){console.log(this.title+' unmounted')}
+
+        // in keet alive we use activated and deactivated hooks
+        activated(){console.log(this.title+' activated')},
+        deactivated(){console.log(this.title+' deactivated')}
+    })
+    let vm = app.mount('#root')
+    </script>
+</body>
+</html>
